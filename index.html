@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #example {
+            width: 500px;
+            margin: 25px auto 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="example">
+        <b>Usage:</b>
+        <ol>
+            <li>Upload file</li>
+            <li>Observe file content below</li>
+            <li>Modify & <b>save</b> file locally</li>
+            <li>Observe new file content below</li>
+        </ol>
+        <input type="file" id="file-input" onchange="watchFile()" /><br>
+        <p>
+            file content: <br />
+            <span id='content'></span>
+        </p>
+    </div>
+    <script>
+        const input = document.getElementById("file-input")
+        const content = document.getElementById("content")
+
+        const updateInterval = 250 // ms
+
+        let lastModified
+
+        function readFile() {
+            const reader = new FileReader()
+            reader.onload = () => content.textContent = reader.result
+            reader.readAsText(input.files[0])
+        }
+
+        function watchFile() {
+            readFile()
+            lastModified = input.files[0].lastModifiedDate
+            setInterval(tick, updateInterval)
+        }
+
+        function tick() {
+            const file = input.files && input.files[0];
+            if (file.lastModifiedDate.getTime() !== lastModified.getTime()) {
+                lastModified = file.lastModifiedDate
+                readFile()
+            }
+        }
+    </script>
+</body>
+
+</html>
